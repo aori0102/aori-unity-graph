@@ -1,0 +1,10 @@
+﻿{
+  "name": "com.aori.graph",
+  "version": "0.1.0",
+  "displayName": "Aori.Graph",
+  "unity": "6000.0",
+  "description": "A dynamic graph generation tool for Unity, with built-in A* pathfinding support.",
+  "author": {
+    "name": "Aori"
+  }
+}

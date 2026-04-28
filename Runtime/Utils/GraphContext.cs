@@ -1,0 +1,35 @@
+﻿using System.Collections.Generic;
+using Aori.Graph.Dependencies;
+
+namespace Aori.Graph.Utils
+{
+    internal sealed class GraphContext
+    {
+        public List<GraphEntry> EntryList { get; }
+        public HashSet<GraphNode> NodeSet { get; }
+        public List<Cluster> ClusterList { get; }
+        public HashSet<EdgeKey> ClusterShellEdgeSet { get; }
+        public HashSet<GraphNode> IntersectingNodeSet { get; }
+        public GraphConfig Config { get; }
+
+        public GraphContext(GraphConfig config)
+        {
+            Config = config;
+
+            EntryList = new List<GraphEntry>();
+            NodeSet = new HashSet<GraphNode>();
+            ClusterList = new List<Cluster>();
+            ClusterShellEdgeSet = new HashSet<EdgeKey>();
+            IntersectingNodeSet = new HashSet<GraphNode>();
+        }
+
+        public void ResetContext()
+        {
+            EntryList.Clear();
+            NodeSet.Clear();
+            ClusterList.Clear();
+            ClusterShellEdgeSet.Clear();
+            IntersectingNodeSet.Clear();
+        }
+    }
+}

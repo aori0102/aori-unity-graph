@@ -1,0 +1,17 @@
+﻿{
+  "name": "Aori.Graph.Editor",
+  "rootNamespace": "Aori.Graph.Editor",
+  "references": [
+    "UnityEditor.UI",
+    "Aori.Graph"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
