@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Aori.DSA;
+using Aori.DSA.Generic;
 using Aori.Exception;
 using Aori.Graph.Dependencies;
 using Aori.Graph.Utils;
