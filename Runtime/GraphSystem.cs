@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using Aori.EditorUtility;
 using Aori.Exception;
 using Aori.Graph.Dependencies;
 using Aori.Graph.Pathfinding;
 using Aori.Graph.Serialization;
 using Aori.Graph.Strategies;
 using Aori.Graph.Utils;
-using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -58,6 +58,14 @@ namespace Aori.Graph
         /// </summary>
         [SerializeField]
         private bool m_drawConnection = true;
+
+        [SerializeField]
+        private bool m_drawNodeBounding = true;
+
+        [SerializeField]
+        [ShowIf(nameof(m_drawNodeBounding))]
+        [Range(0.1f, 5f)]
+        private float m_nodeBoundSize = 0.2f;
 
         /// <summary>
         /// Phase index (0-11) at which to terminate the graph build process.
@@ -472,6 +480,14 @@ namespace Aori.Graph
                             ? Color.red
                             : Color.blue;
                     Gizmos.DrawSphere(node.Position, 0.08f);
+
+                    if (!m_drawNodeBounding)
+                    {
+                        continue;
+                    }
+
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawWireSphere(node.Position, m_nodeBoundSize);
                 }
             }
 
@@ -692,7 +708,7 @@ namespace Aori.Graph
                 return;
             }
 
-            EditorUtility.SetDirty(this);
+            UnityEditor.EditorUtility.SetDirty(this);
             if (gameObject.scene.IsValid())
             {
                 EditorSceneManager.MarkSceneDirty(gameObject.scene);

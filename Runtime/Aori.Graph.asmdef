@@ -4,7 +4,8 @@
     "references": [
         "Aori.Exception",
         "Aori.Math",
-        "Aori.DSA"
+        "Aori.DSA",
+        "Aori.EditorUtility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
