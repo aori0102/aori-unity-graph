@@ -715,5 +715,29 @@ namespace Aori.Graph
             }
 #endif
         }
+
+        /// <summary>
+        /// Returns all nodes of this graph.
+        /// </summary>
+        /// <returns>All nodes of this graph.</returns>
+        public IReadOnlyList<Vector3> GetAllNodePosition()
+        {
+            return m_context.NodeSet.Select(node => node.Position).ToArray();
+        }
+
+        /// <summary>
+        /// Returns all nodes of this graph inside the given circular area.
+        /// </summary>
+        /// <param name="center">The center of the circular area.</param>
+        /// <param name="radius">The radius of the circular area.</param>
+        /// <returns>All nodes of this graph inside the given circular area.</returns>
+        public IReadOnlyList<Vector3> GetAllNodePosition(Vector3 center, float radius)
+        {
+            return m_context.NodeSet
+                .Where(node =>
+                    Vector3.Distance(node.Position.Flatten(), center.Flatten()) <= radius)
+                .Select(node => node.Position)
+                .ToArray();
+        }
     }
 }
