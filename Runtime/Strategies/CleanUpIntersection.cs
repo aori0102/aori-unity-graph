@@ -26,8 +26,20 @@ namespace Aori.Graph.Strategies
                 var clusterNodes = cluster.OrderedNodes.ToList();
                 var nodesToRemove = new HashSet<GraphNode>();
                 var edgesToRemove = new HashSet<EdgeKey>();
+                var edgesToRebuild = new HashSet<EdgeKey>();
 
-                ProcessCluster(cluster, clusterNodes, edgesToRemove, nodesToRemove);
+                ProcessCluster(
+                    cluster,
+                    clusterNodes,
+                    edgesToRemove,
+                    nodesToRemove
+                );
+
+                CalculateRebuildEdges(
+                    clusterNodes,
+                    nodesToRemove,
+                    edgesToRebuild
+                );
 
                 foreach (var removeEdge in edgesToRemove)
                 {
@@ -48,7 +60,47 @@ namespace Aori.Graph.Strategies
                     _context.NodeSet.Remove(removeNode);
                 }
 
+                foreach (var rebuildEdge in edgesToRebuild)
+                {
+                    rebuildEdge.First.AddNeighbor(rebuildEdge.Second);
+                    rebuildEdge.Second.AddNeighbor(rebuildEdge.First);
+                }
+
                 cluster.SetOrderedNodes(clusterNodes);
+            }
+        }
+
+        private void CalculateRebuildEdges(
+            List<GraphNode> clusterNodes,
+            HashSet<GraphNode> nodesToRemove,
+            HashSet<EdgeKey> edgesToRebuild)
+        {
+            var nodeCount = clusterNodes.Count;
+            foreach (var node in clusterNodes.Where(nodesToRemove.Contains))
+            {
+                var index = clusterNodes.IndexOf(node);
+
+                GraphNode previous = null;
+                GraphNode next = null;
+
+                for (var i = 0; i < nodeCount - 1; i++)
+                {
+                    var previousIndex = (nodeCount + index - i - 1) % nodeCount;
+                    var nextIndex = (index + i + 1) % nodeCount;
+
+                    previous ??= nodesToRemove.Contains(clusterNodes[previousIndex])
+                        ? null
+                        : clusterNodes[previousIndex];
+
+                    next ??= nodesToRemove.Contains(clusterNodes[nextIndex])
+                        ? null
+                        : clusterNodes[nextIndex];
+                }
+
+                if (previous != null && next != null && !ReferenceEquals(previous, next))
+                {
+                    edgesToRebuild.Add(new EdgeKey(previous, next));
+                }
             }
         }
 
