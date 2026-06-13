@@ -6,6 +6,7 @@ namespace Aori.Graph.Utils
     internal sealed class GraphContext
     {
         public List<GraphEntry> EntryList { get; }
+        public List<GraphDeadZone> DeadZoneList { get; }
         public HashSet<GraphNode> NodeSet { get; }
         public List<Cluster> ClusterList { get; }
         public HashSet<EdgeKey> ClusterShellEdgeSet { get; }
@@ -16,6 +17,7 @@ namespace Aori.Graph.Utils
         {
             Config = config;
 
+            DeadZoneList = new List<GraphDeadZone>();
             EntryList = new List<GraphEntry>();
             NodeSet = new HashSet<GraphNode>();
             ClusterList = new List<Cluster>();
@@ -25,6 +27,7 @@ namespace Aori.Graph.Utils
 
         public void ResetContext()
         {
+            DeadZoneList.Clear();
             EntryList.Clear();
             NodeSet.Clear();
             ClusterList.Clear();

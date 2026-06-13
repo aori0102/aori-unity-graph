@@ -73,7 +73,7 @@ namespace Aori.Graph
         /// </summary>
         [Header("- Debug Build")]
         [SerializeField]
-        [Range(0, 7)]
+        [Range(0, 8)]
         [Tooltip("Editor-only: terminate BuildGraph after the selected phase. 0 means do not terminate early.")]
         private int m_terminateAfterPhase;
 #endif
@@ -224,6 +224,13 @@ namespace Aori.Graph
 
             m_context.EntryList.AddRange(graphEntries);
 
+            // Fetch all dead zones from scene
+            var deadZones = FindObjectsByType<GraphDeadZone>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+            m_context.DeadZoneList.AddRange(deadZones);
+
 #if UNITY_EDITOR
             if (TryTerminateBuildAtPhase(0))
             {
@@ -311,6 +318,12 @@ namespace Aori.Graph
 
             // Phase 7
             _strategyList.Add(new SnapNonShellEdgesToNearbyVertices(
+                context: m_context,
+                system: this
+            ));
+
+            // Phase 8
+            _strategyList.Add(new VerifyDeadZones(
                 context: m_context,
                 system: this
             ));
