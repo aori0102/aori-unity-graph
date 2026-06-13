@@ -49,6 +49,12 @@ namespace Aori.Graph.Strategies
                     _context.ClusterShellEdgeSet.Remove(removeEdge);
                 }
 
+                foreach (var rebuildEdge in edgesToRebuild)
+                {
+                    rebuildEdge.First.AddNeighbor(rebuildEdge.Second);
+                    rebuildEdge.Second.AddNeighbor(rebuildEdge.First);
+                }
+
                 foreach (var removeNode in nodesToRemove)
                 {
                     foreach (var neighbor in removeNode.Neighbors)
@@ -58,12 +64,6 @@ namespace Aori.Graph.Strategies
 
                     clusterNodes.Remove(removeNode);
                     _context.NodeSet.Remove(removeNode);
-                }
-
-                foreach (var rebuildEdge in edgesToRebuild)
-                {
-                    rebuildEdge.First.AddNeighbor(rebuildEdge.Second);
-                    rebuildEdge.Second.AddNeighbor(rebuildEdge.First);
                 }
 
                 cluster.SetOrderedNodes(clusterNodes);
