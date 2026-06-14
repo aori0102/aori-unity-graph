@@ -73,7 +73,7 @@ namespace Aori.Graph
         /// </summary>
         [Header("- Debug Build")]
         [SerializeField]
-        [Range(0, 8)]
+        [Range(0, 9)]
         [Tooltip("Editor-only: terminate BuildGraph after the selected phase. 0 means do not terminate early.")]
         private int m_terminateAfterPhase;
 #endif
@@ -324,6 +324,12 @@ namespace Aori.Graph
 
             // Phase 8
             _strategyList.Add(new VerifyDeadZones(
+                context: m_context,
+                system: this
+            ));
+
+            // Phase 9
+            _strategyList.Add(new CleanUpGraph(
                 context: m_context,
                 system: this
             ));
