@@ -122,10 +122,63 @@ namespace Aori.Graph.Strategies
                 var secondIsSplitPoint
                     = _context.IntersectingNodeSet.Contains(edge.Second);
 
+                if (firstIsSplitPoint)
+                {
+                    var ignoreList = new List<Cluster>
+                    {
+                        cluster, GetIntersectedCluster(edge.First, cluster)
+                    };
+                    if (IsInsideAnyCluster(Math.ToXZ(edge.First.Position), ignoreList))
+                    {
+                        nodesToRemove.Add(edge.First);
+                    }
+                }
+
+                if (secondIsSplitPoint)
+                {
+                    var ignoreList = new List<Cluster>
+                    {
+                        cluster, GetIntersectedCluster(edge.Second, cluster)
+                    };
+                    if (IsInsideAnyCluster(Math.ToXZ(edge.Second.Position), ignoreList))
+                    {
+                        nodesToRemove.Add(edge.Second);
+                    }
+                }
+
                 switch (firstIsSplitPoint)
                 {
-                    // Neither is an intersecting node.
+                    case true when secondIsSplitPoint:
+                    {
+                        var ignoreList = new List<Cluster>
+                        {
+                            cluster,
+                            GetIntersectedCluster(edge.First, cluster),
+                            GetIntersectedCluster(edge.Second, cluster)
+                        };
+
+                        var anyIntra = false; // If any nodes are inside any clusters.
+                        if (IsInsideAnyCluster(Math.ToXZ(edge.First.Position), ignoreList))
+                        {
+                            anyIntra = true;
+                            nodesToRemove.Add(edge.First);
+                        }
+
+                        if (IsInsideAnyCluster(Math.ToXZ(edge.Second.Position), ignoreList))
+                        {
+                            anyIntra = true;
+                            nodesToRemove.Add(edge.Second);
+                        }
+
+                        if (!anyIntra)
+                        {
+                            edgesToRemove.Add(edge);
+                        }
+
+                        break;
+                    }
                     case false when !secondIsSplitPoint:
+                    {
                         if (IsInsideAnyCluster(Math.ToXZ(edge.First.Position), cluster))
                         {
                             nodesToRemove.Add(edge.First);
@@ -136,50 +189,37 @@ namespace Aori.Graph.Strategies
                             nodesToRemove.Add(edge.Second);
                         }
 
-                        continue;
-
-                    // Both are intersecting nodes.
-                    case true when secondIsSplitPoint:
-                    {
-                        var midpoint
-                            = (edge.First.Position + edge.Second.Position) / 2f;
-                        if (IsInsideAnyCluster(Math.ToXZ(midpoint), cluster))
-                        {
-                            edgesToRemove.Add(edge);
-                        }
-
-                        continue;
+                        break;
                     }
-
-                    // The first node of the edge is an intersecting node.
-                    case true when IsInsideAnyCluster(edge.Second, cluster):
-                        edgesToRemove.Add(edge);
-                        nodesToRemove.Add(edge.Second);
-
-                        continue;
-
-                    // The second node of the edge is an intersecting node.
-                    case false when IsInsideAnyCluster(edge.First, cluster):
-                        edgesToRemove.Add(edge);
-                        nodesToRemove.Add(edge.First);
-
-                        continue;
                 }
             }
         }
 
-        private bool IsInsideAnyCluster(GraphNode node, Cluster currentCluster)
+        private Cluster GetIntersectedCluster(GraphNode intersection, Cluster firstCluster)
         {
-            return IsInsideAnyCluster(
-                point: Math.ToXZ(node.Position),
-                currentCluster: currentCluster
+            return _context.ClusterList.FirstOrDefault(otherCluster =>
+                !ReferenceEquals(otherCluster, firstCluster) &&
+                otherCluster.Nodes.Contains(intersection)
             );
         }
 
-        private bool IsInsideAnyCluster(Vector2 point, Cluster currentCluster)
+        private bool IsInsideAnyCluster(Vector2 point, Cluster ignoredCluster)
         {
             return _context.ClusterList.Any(otherCluster =>
-                !ReferenceEquals(currentCluster, otherCluster) &&
+                !ReferenceEquals(ignoredCluster, otherCluster) &&
+                Math.IsPointInsidePolygon(
+                    point: point,
+                    vertices: otherCluster.OrderedNodes
+                        .Select(node => Math.ToXZ(node.Position))
+                        .ToList()
+                )
+            );
+        }
+
+        private bool IsInsideAnyCluster(Vector2 point, List<Cluster> ignoredClusters)
+        {
+            return _context.ClusterList.Any(otherCluster =>
+                !ignoredClusters.Contains(otherCluster) &&
                 Math.IsPointInsidePolygon(
                     point: point,
                     vertices: otherCluster.OrderedNodes
