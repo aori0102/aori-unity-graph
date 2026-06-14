@@ -126,6 +126,16 @@ namespace Aori.Graph.Strategies
                 {
                     // Neither is an intersecting node.
                     case false when !secondIsSplitPoint:
+                        if (IsInsideAnyCluster(Math.ToXZ(edge.First.Position), cluster))
+                        {
+                            nodesToRemove.Add(edge.First);
+                        }
+
+                        if (IsInsideAnyCluster(Math.ToXZ(edge.Second.Position), cluster))
+                        {
+                            nodesToRemove.Add(edge.Second);
+                        }
+
                         continue;
 
                     // Both are intersecting nodes.
