@@ -311,25 +311,25 @@ namespace Aori.Graph
             ));
 
             // Phase 6
-            _strategyList.Add(new BlendCloseNodes(
+            _strategyList.Add(new CleanUpGraph(
                 context: m_context,
                 system: this
             ));
 
             // Phase 7
-            _strategyList.Add(new SnapNonShellEdgesToNearbyVertices(
+            _strategyList.Add(new BlendCloseNodes(
                 context: m_context,
                 system: this
             ));
 
             // Phase 8
-            _strategyList.Add(new VerifyDeadZones(
+            _strategyList.Add(new SnapNonShellEdgesToNearbyVertices(
                 context: m_context,
                 system: this
             ));
 
             // Phase 9
-            _strategyList.Add(new CleanUpGraph(
+            _strategyList.Add(new VerifyDeadZones(
                 context: m_context,
                 system: this
             ));
