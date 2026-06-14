@@ -24,9 +24,15 @@ namespace Aori.Graph.Strategies
             {
                 foreach (var second in first.Neighbors)
                 {
+                    var edge = new EdgeKey(first, second);
+                    if (_context.ClusterShellEdgeSet.Contains(edge))
+                    {
+                        continue;
+                    }
+
                     if (IsEdgeIntraConnected(first, second))
                     {
-                        edgesToRemove.Add(new EdgeKey(first, second));
+                        edgesToRemove.Add(edge);
                     }
                 }
             }
