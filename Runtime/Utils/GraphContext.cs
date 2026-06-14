@@ -12,6 +12,7 @@ namespace Aori.Graph.Utils
         public HashSet<EdgeKey> ClusterShellEdgeSet { get; }
         public HashSet<GraphNode> IntersectingNodeSet { get; }
         public GraphConfig Config { get; }
+        public List<EdgeRemover>  EdgeRemoverList { get; }
 
         public GraphContext(GraphConfig config)
         {
@@ -23,6 +24,7 @@ namespace Aori.Graph.Utils
             ClusterList = new List<Cluster>();
             ClusterShellEdgeSet = new HashSet<EdgeKey>();
             IntersectingNodeSet = new HashSet<GraphNode>();
+            EdgeRemoverList = new List<EdgeRemover>();
         }
 
         public void ResetContext()
@@ -33,6 +35,7 @@ namespace Aori.Graph.Utils
             ClusterList.Clear();
             ClusterShellEdgeSet.Clear();
             IntersectingNodeSet.Clear();
+            EdgeRemoverList.Clear();
         }
     }
 }

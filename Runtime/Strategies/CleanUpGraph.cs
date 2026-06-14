@@ -13,32 +13,7 @@ namespace Aori.Graph.Strategies
 
         public override void Execute()
         {
-            CleanUpIntraConnections();
             CleanUpIntraNodes();
-        }
-
-        private void CleanUpIntraConnections()
-        {
-            var edgesToRemove = new HashSet<EdgeKey>();
-            foreach (var first in _context.NodeSet)
-            {
-                foreach (var second in first.Neighbors)
-                {
-                    var edge = new EdgeKey(first, second);
-                    if (IsIntersection(first) &&
-                        IsIntersection(second) &&
-                        IsEdgeIntraConnected(first, second))
-                    {
-                        edgesToRemove.Add(edge);
-                    }
-                }
-            }
-
-            foreach (var edge in edgesToRemove)
-            {
-                edge.First.RemoveNeighbor(edge.Second);
-                edge.Second.RemoveNeighbor(edge.First);
-            }
         }
 
         private bool IsIntersection(GraphNode node)

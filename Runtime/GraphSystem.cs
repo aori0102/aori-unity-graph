@@ -73,7 +73,7 @@ namespace Aori.Graph
         /// </summary>
         [Header("- Debug Build")]
         [SerializeField]
-        [Range(0, 9)]
+        [Range(0, 10)]
         [Tooltip("Editor-only: terminate BuildGraph after the selected phase. 0 means do not terminate early.")]
         private int m_terminateAfterPhase;
 #endif
@@ -231,6 +231,13 @@ namespace Aori.Graph
             );
             m_context.DeadZoneList.AddRange(deadZones);
 
+            // Fetch all manual edge removers
+            var edgeRemovers = FindObjectsByType<EdgeRemover>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+            m_context.EdgeRemoverList.AddRange(edgeRemovers);
+
 #if UNITY_EDITOR
             if (TryTerminateBuildAtPhase(0))
             {
@@ -330,6 +337,12 @@ namespace Aori.Graph
 
             // Phase 9
             _strategyList.Add(new VerifyDeadZones(
+                context: m_context,
+                system: this
+            ));
+
+            // Phase 10
+            _strategyList.Add(new RemoveManualEdges(
                 context: m_context,
                 system: this
             ));
