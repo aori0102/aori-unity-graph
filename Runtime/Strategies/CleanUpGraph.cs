@@ -25,12 +25,9 @@ namespace Aori.Graph.Strategies
                 foreach (var second in first.Neighbors)
                 {
                     var edge = new EdgeKey(first, second);
-                    if (_context.ClusterShellEdgeSet.Contains(edge))
-                    {
-                        continue;
-                    }
-
-                    if (IsEdgeIntraConnected(first, second))
+                    if (IsIntersection(first) &&
+                        IsIntersection(second) &&
+                        IsEdgeIntraConnected(first, second))
                     {
                         edgesToRemove.Add(edge);
                     }
@@ -42,6 +39,11 @@ namespace Aori.Graph.Strategies
                 edge.First.RemoveNeighbor(edge.Second);
                 edge.Second.RemoveNeighbor(edge.First);
             }
+        }
+
+        private bool IsIntersection(GraphNode node)
+        {
+            return _context.IntersectingNodeSet.Contains(node);
         }
 
         private void CleanUpIntraNodes()
