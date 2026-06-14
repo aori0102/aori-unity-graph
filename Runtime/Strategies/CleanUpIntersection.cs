@@ -20,7 +20,8 @@ namespace Aori.Graph.Strategies
             {
                 foreach (var neighbor in intersection.Neighbors)
                 {
-                    if(IsInsideAnyCluster(neighbor) || IsInsideAnyCluster(intersection, neighbor))
+                    if(IsInsideAnyCluster(neighbor) ||
+                       IsIntraConnected(intersection, neighbor))
                     {
                         nodesToRemove.Add(intersection);
                     }
@@ -38,16 +39,21 @@ namespace Aori.Graph.Strategies
             }
         }
 
-        private bool IsInsideAnyCluster(GraphNode first, GraphNode second)
+        private bool IsIntraConnected(GraphNode first, GraphNode second)
         {
-            return _context.ClusterList.Any(cluster =>
-                Math.IsPointInsidePolygon(
-                    point: Math.ToXZ((first.Position + second.Position) / 2f),
-                    vertices: cluster.OrderedNodes
-                        .Select(candidate => Math.ToXZ(candidate.Position))
-                        .ToList()
-                )
-            );
+            if (!_context.IntersectingNodeSet.Contains(first) ||
+                !_context.IntersectingNodeSet.Contains(second))
+            {
+                return false;
+            }
+            
+            var firstClusters = _context.ClusterList
+                .Where(cluster => cluster.Nodes.Contains(first));
+            var secondClusters = _context.ClusterList
+                .Where(cluster => cluster.Nodes.Contains(second));
+            var mutual = firstClusters.Any(secondClusters.Contains);
+
+            return mutual;
         }
 
         private bool IsInsideAnyCluster(GraphNode node)
