@@ -16,13 +16,15 @@ namespace Aori.Graph.Strategies
         public override void Execute()
         {
             var nodesToRemove = new HashSet<GraphNode>();
-            var query = _context.IntersectingNodeSet
-                .SelectMany(intersection => intersection.Neighbors)
-                .Where(IsInsideAnyCluster)
-                .ToArray();
-            foreach (var candidate in query)
+            foreach (var intersection in _context.IntersectingNodeSet)
             {
-                nodesToRemove.Add(candidate);
+                foreach (var neighbor in intersection.Neighbors)
+                {
+                    if(IsInsideAnyCluster(neighbor) || IsInsideAnyCluster(intersection, neighbor))
+                    {
+                        nodesToRemove.Add(intersection);
+                    }
+                }
             }
 
             foreach (var node in nodesToRemove)
@@ -34,6 +36,18 @@ namespace Aori.Graph.Strategies
 
                 _context.NodeSet.Remove(node);
             }
+        }
+
+        private bool IsInsideAnyCluster(GraphNode first, GraphNode second)
+        {
+            return _context.ClusterList.Any(cluster =>
+                Math.IsPointInsidePolygon(
+                    point: Math.ToXZ((first.Position + second.Position) / 2f),
+                    vertices: cluster.OrderedNodes
+                        .Select(candidate => Math.ToXZ(candidate.Position))
+                        .ToList()
+                )
+            );
         }
 
         private bool IsInsideAnyCluster(GraphNode node)
