@@ -41,9 +41,7 @@ namespace Aori.Graph.Strategies
                 // Define a new cluster with the created nodes
                 var cluster = new Cluster();
                 cluster.SetOrderedNodes(nodes);
-
-                Debug.Log(
-                    $"Cluster number {_context.ClusterList.Count} corresponding to entry {entry.GetInstanceID()} of {entry.transform.parent?.name}");
+                cluster.SetAllowIntraConnections(entry.AllowIntraConnections);
 
                 _context.ClusterList.Add(cluster);
             }

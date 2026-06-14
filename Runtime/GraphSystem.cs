@@ -708,6 +708,7 @@ namespace Aori.Graph
                 var cluster = new Cluster();
                 cluster.SetOrderedNodes(orderedNodes);
                 cluster.SetMesh(serializedCluster.Mesh);
+                cluster.SetAllowIntraConnections(serializedCluster.AllowIntraConnections);
                 m_context.ClusterList.Add(cluster);
 
                 if (orderedNodes.Count < 2)
