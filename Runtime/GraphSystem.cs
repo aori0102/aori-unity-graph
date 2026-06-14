@@ -300,18 +300,18 @@ namespace Aori.Graph
             ));
 
             // Phase 4
-            _strategyList.Add(new CleanUpGraph(
-                context: m_context,
-                system: this
-            ));
-
-            // Phase 5
             _strategyList.Add(new CleanUpIntersection(
                 context: m_context,
                 system: this
             ));
-            // Phase 6
+            // Phase 5
             _strategyList.Add(new EstablishConnectionAcrossClusters(
+                context: m_context,
+                system: this
+            ));
+
+            // Phase 6
+            _strategyList.Add(new CleanUpGraph(
                 context: m_context,
                 system: this
             ));
