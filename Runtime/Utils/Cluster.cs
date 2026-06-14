@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Aori.Graph.Dependencies;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Aori.Graph.Utils
 {
@@ -29,14 +31,17 @@ namespace Aori.Graph.Utils
         /// <summary>
         /// Runtime set of nodes for membership checking. Not serialized.
         /// </summary>
-        [System.NonSerialized]
+        [NonSerialized]
         private HashSet<GraphNode> m_nodeSet = new();
 
         /// <summary>
         /// Runtime ordered list of nodes forming the shell cycle. Not serialized.
         /// </summary>
-        [System.NonSerialized]
+        [NonSerialized]
         private List<GraphNode> m_orderedNodeList = new();
+
+        [NonSerialized]
+        private bool m_allowIntraConnections;
 
         /// <summary>
         /// Gets a read-only collection of all nodes in this cluster.
@@ -68,6 +73,12 @@ namespace Aori.Graph.Utils
         /// May be null if the cluster mesh has not been finalized yet.
         /// </summary>
         public Mesh Mesh => m_mesh;
+        public bool AllowIntraConnections => m_allowIntraConnections;
+
+        public void SetAllowIntraConnections(bool allow)
+        {
+            m_allowIntraConnections = allow;
+        }
 
         /// <summary>
         /// Sets the ordered nodes for this cluster, updating both the set and ordered list.
@@ -140,4 +151,3 @@ namespace Aori.Graph.Utils
         }
     }
 }
-

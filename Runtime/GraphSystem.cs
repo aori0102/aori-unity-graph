@@ -624,7 +624,8 @@ namespace Aori.Graph
                 var serializedCluster = new SerializedCluster
                 {
                     OrderedNodeIndexList = new List<int>(),
-                    Mesh = cluster.Mesh
+                    Mesh = cluster.Mesh,
+                    AllowIntraConnections = cluster.AllowIntraConnections
                 };
 
                 foreach (var node in cluster.OrderedNodes)

@@ -14,6 +14,9 @@ namespace Aori.Graph.Dependencies
         [SerializeField]
         private List<Transform> m_graphNodePoints = new();
 
+        [SerializeField]
+        private bool m_allowIntraConnections;
+
 #if UNITY_EDITOR
         [Header("- Debug Visualization")]
         [SerializeField]
@@ -21,6 +24,7 @@ namespace Aori.Graph.Dependencies
 #endif
 
         public List<Transform> GraphNodePoints => m_graphNodePoints;
+        public bool AllowIntraConnections => m_allowIntraConnections;
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()

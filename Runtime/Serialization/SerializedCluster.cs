@@ -11,6 +11,15 @@ namespace Aori.Graph.Serialization
 
         [SerializeField]
         private Mesh m_mesh;
+        
+        [SerializeField]
+        private bool m_allowIntraConnections;
+
+        public bool AllowIntraConnections
+        {
+            get => m_allowIntraConnections;
+            set => m_allowIntraConnections = value;
+        }
 
         public List<int> OrderedNodeIndexList
         {
