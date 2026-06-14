@@ -16,23 +16,23 @@ namespace Aori.Graph.Strategies
         public override void Execute()
         {
             var nodesToRemove = new HashSet<GraphNode>();
-            var edgesToremove = new HashSet<EdgeKey>();
+            var edgesToRemove = new HashSet<EdgeKey>();
             foreach (var intersection in _context.IntersectingNodeSet)
             {
                 foreach (var neighbor in intersection.Neighbors)
                 {
                     if (IsInsideAnyCluster(neighbor))
                     {
-                        nodesToRemove.Add(intersection);
+                        nodesToRemove.Add(neighbor);
                     }
                     else if (IsIntraConnected(neighbor, intersection))
                     {
-                        edgesToremove.Add(new EdgeKey(neighbor, intersection));
+                        edgesToRemove.Add(new EdgeKey(neighbor, intersection));
                     }
                 }
             }
 
-            foreach (var edge in edgesToremove)
+            foreach (var edge in edgesToRemove)
             {
                 edge.First.RemoveNeighbor(edge.Second);
                 edge.Second.RemoveNeighbor(edge.First);
