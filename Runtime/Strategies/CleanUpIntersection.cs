@@ -16,13 +16,26 @@ namespace Aori.Graph.Strategies
         public override void Execute()
         {
             var nodesToRemove = new HashSet<GraphNode>();
-            var query = _context.IntersectingNodeSet
-                .SelectMany(intersection => intersection.Neighbors)
-                .Where(IsInsideAnyCluster)
-                .ToArray();
-            foreach (var candidate in query)
+            var edgesToRemove = new HashSet<EdgeKey>();
+            foreach (var intersection in _context.IntersectingNodeSet)
             {
-                nodesToRemove.Add(candidate);
+                foreach (var neighbor in intersection.Neighbors)
+                {
+                    if (IsInsideAnyCluster(neighbor))
+                    {
+                        nodesToRemove.Add(neighbor);
+                    }
+                    else if (IsIntraConnected(neighbor, intersection))
+                    {
+                        edgesToRemove.Add(new EdgeKey(neighbor, intersection));
+                    }
+                }
+            }
+
+            foreach (var edge in edgesToRemove)
+            {
+                edge.First.RemoveNeighbor(edge.Second);
+                edge.Second.RemoveNeighbor(edge.First);
             }
 
             foreach (var node in nodesToRemove)
@@ -34,6 +47,23 @@ namespace Aori.Graph.Strategies
 
                 _context.NodeSet.Remove(node);
             }
+        }
+
+        private bool IsIntraConnected(GraphNode first, GraphNode second)
+        {
+            if (!_context.IntersectingNodeSet.Contains(first) ||
+                !_context.IntersectingNodeSet.Contains(second))
+            {
+                return false;
+            }
+
+            var firstClusters = _context.ClusterList
+                .Where(cluster => cluster.Nodes.Contains(first));
+            var secondClusters = _context.ClusterList
+                .Where(cluster => cluster.Nodes.Contains(second));
+            var mutual = firstClusters.Any(secondClusters.Contains);
+
+            return mutual;
         }
 
         private bool IsInsideAnyCluster(GraphNode node)
